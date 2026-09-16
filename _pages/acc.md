@@ -657,6 +657,10 @@ width: 850px;
   margin-top: 25px;
 }
 
+#activity-question p {
+  white-space: pre-line;
+}
+
 .activity-question h3 {
   font-size: 22px;
   line-height: 1.4;
@@ -712,20 +716,24 @@ width: 850px;
 }
 
 #activity-feedback {
-  margin-top: 20px;
+  margin-top: 0px;
   font-size: 18px;
 }
 
 .correct {
-  color: #b8f2b8;
+  color: #7f9a79; /* green */
   font-weight: 700;
 }
 
 .incorrect {
-  color: #ffd0d0;
+  color: #e07a7a; /* red */
   font-weight: 700;
 }
 
+.feedback-text {
+  color: #ffffff;
+  font-weight: 400;
+}
 
 .activity-text-input {
   width: 100%;
@@ -860,6 +868,116 @@ width: 850px;
   margin-top: 6px;
   min-height: 24px;
 }
+
+
+/* ========================================
+   DRAG & DROP SORTING
+   ======================================== */
+
+.sort-zones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.sort-zone {
+  border: 2px dashed #6c2a68;
+  border-radius: 10px;
+  min-height: 180px;
+  padding: 15px;
+  background: #f8f5f8;
+  transition: all 0.2s ease;
+}
+
+.sort-zone h4 {
+  margin: 0 0 15px 0;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6c2a68;
+}
+
+.sort-drop-area {
+  min-height: 120px;
+}
+
+
+
+.sort-zone.drag-over {
+  border-style: solid;
+  background: #eee5ef;
+  transform: scale(1.01);
+}
+
+
+
+.sort-zone .drag-item {
+  margin-bottom: 8px;
+}
+
+
+
+
+@media (max-width: 700px) {
+
+  .sort-zones {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+.multiple-select-feedback {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+}
+
+.multiple-select-feedback li {
+  padding: 5px 5px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}
+
+.feedback-correct {
+  background: #eaf6ea;
+}
+
+.feedback-incorrect {
+  background: #fcecec;
+}
+
+#activity-feedback p {
+  margin: 1px 0;
+  color: #ffffff !important;
+}
+
+#activity-feedback p {
+  white-space: pre-line;
+}
+
+
+.multiple-select-feedback {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+}
+
+.multiple-select-feedback li {
+  padding: 5px 5px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  color: #ffffff;
+}
+
+.feedback-correct {
+  color: #ffffff !important;
+}
+
+.feedback-incorrect {
+  color: #ffffff !important;
+}
+
 
 </style>
 
@@ -1013,8 +1131,10 @@ width: 850px;
       <a class="btn" href="#"
         onclick="openVideo('ZPXYoJJo8qA?si=ZlX967WyjtxgpLWm','Caches','Professor Tobias Weinzierl'); event.stopPropagation(); return false;">
         Lecture
-      </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=66">
+        </a>
+      <a class="btn"
+        href="#"
+        onclick="openActivity('caches'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1042,7 +1162,9 @@ width: 850px;
         onclick="openVideo('jWFImJ-5Gtg?si=BBZou2CJvwDj7EC-','Machine Architectures (Flynn’s Taxonomy)','Dr. Mladen Ivkovic'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=67">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('machine-architectures'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1071,7 +1193,9 @@ width: 850px;
         onclick="openVideo('8axA0RUaxRA?si=kwFcCVbDKzJw3vw4','GPU Architecture','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=60">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('gpu'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1101,7 +1225,9 @@ width: 850px;
         onclick="openVideo('i-88l2K9824?si=5hG4_gn3DE3_r6Tq','MPI','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=61">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('mpi'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1130,7 +1256,9 @@ width: 850px;
         onclick="openVideo('7Z3JrE8SBgU?si=QB-EK98D3_63IAiq','Vectorisation','Dr. Thomas Flynn'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=62">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('vectorisation'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1159,12 +1287,16 @@ width: 850px;
         onclick="openVideo('iwb17_aCSRA?si=NGorUytvUqWRMWEZ','Shared-Memory Parallel Paradigms','Dr. Mladen Ivkovic'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=93">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('shared-memory'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
   </div>
 </div>
+
+
 
 
 
@@ -1190,7 +1322,9 @@ width: 850px;
         onclick="openVideo('uhYFZrqe9VY?si=TbG28ic8nFSU0kAm','Roofline','Professor Tobias Weinzierl'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=63">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('roofline'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1220,7 +1354,9 @@ width: 850px;
         onclick="openVideo('99VgSkjLQM4?si=YqCN8fMLu2iB4Tt6','Strong Scaling','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=65">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('strong-scaling'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1250,7 +1386,9 @@ width: 850px;
         onclick="openVideo('dVZqpXi5BRE?si=pNSgIwWY38rt4W12','Weak Scaling','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
         Lecture
       </a>
-      <a class="btn" href="https://training-academy.dirac.ac.uk/course/section.php?id=64">
+      <a class="btn"
+        href="#"
+        onclick="openActivity('weak-scaling'); event.stopPropagation(); return false;">
         Activities
       </a>
     </div>
@@ -1751,7 +1889,11 @@ document.querySelector(".graph-grid").addEventListener("click", function(e){
 {% include activity-modal.html %}
 
 <script>
-window.activitiesData = {{ site.data.activities | jsonify }};
+window.activitiesData = {};
+
+{% for activity in site.data.activities %}
+  window.activitiesData[{{ activity[0] | jsonify }}] = {{ activity[1] | jsonify }};
+{% endfor %}
 </script>
 
 <script src="{{ '/assets/js/activities.js' | relative_url }}"></script>
