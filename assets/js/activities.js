@@ -769,7 +769,6 @@ function checkDragOrder() {
     : `<p class="incorrect">Not quite — try again.</p>`;
 }
 
-
 // ========================================
 // ESCAPE KEY
 // ========================================
