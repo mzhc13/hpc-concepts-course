@@ -1172,8 +1172,6 @@ width: 850px;
 
 
 
-
-
 <div
   id="roofline"
   class="arch-card pos-roofline"
