@@ -85,7 +85,10 @@ function renderActivity() {
 
   content.innerHTML = renderQuestion(activity);
 
-  if (activity.type === "drag-order") {
+  if (
+    activity.type === "drag-order" ||
+    activity.type === "drag-sort"
+  ) {
     setupDragAndDrop();
   }
 }
@@ -106,7 +109,7 @@ function renderQuestion(activity) {
     return `
       <div class="activity-question">
 
-        <h3>${activity.question}</h3>
+        <h3>${activity.question.replace(/\n/g, "<br>")}</h3>
 
         ${activity.code ? `
           <pre class="activity-code">${activity.code
@@ -114,6 +117,7 @@ function renderQuestion(activity) {
   .replace(/</g, "&lt;")
   .replace(/>/g, "&gt;")}</pre>
         ` : ""}
+
 
         ${activity.question_text ? `
           <h3>${activity.question_text}</h3>
@@ -153,6 +157,62 @@ function renderQuestion(activity) {
   }
 
 
+    // ----------------------------------------
+  // MULTIPLE SELECT
+  // ----------------------------------------
+
+  if (activity.type === "multiple-select") {
+
+    return `
+      <div class="activity-question">
+
+        <h3>${activity.question.replace(/\n/g, "<br>")}</h3>
+
+        ${activity.code ? `
+          <pre class="activity-code">${activity.code
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")}</pre>
+        ` : ""}
+
+        ${activity.question_text ? `
+          <h3>${activity.question_text}</h3>
+        ` : ""}
+
+        <div class="activity-options">
+
+          ${activity.options.map((option, index) => `
+            <label class="activity-option">
+
+              <input
+                type="checkbox"
+                name="activity-answer"
+                value="${index}"
+              >
+
+              <span>${option}</span>
+
+            </label>
+          `).join("")}
+
+        </div>
+
+        <button
+          class="activity-check"
+          onclick="checkMultipleSelect()"
+        >
+          Check answers
+        </button>
+
+        <div id="activity-feedback"></div>
+
+        ${navigationButtons()}
+
+      </div>
+    `;
+  }
+
+
   // ----------------------------------------
   // FILL IN THE BLANK
   // ----------------------------------------
@@ -165,7 +225,7 @@ function renderQuestion(activity) {
       return `
         <div class="activity-question">
 
-          <h3>${activity.question}</h3>
+          <h3>${activity.question.replace(/\n/g, "<br>")}</h3>
 
           ${activity.code ? `
             <pre class="activity-code">${activity.code
@@ -274,7 +334,7 @@ function renderQuestion(activity) {
     return `
       <div class="activity-question">
 
-        <h3>${activity.question}</h3>
+        <h3>${activity.question.replace(/\n/g, "<br>")}</h3>
 
         <div class="activity-options">
 
@@ -326,7 +386,7 @@ function renderQuestion(activity) {
     return `
       <div class="activity-question">
 
-        <h3>${activity.question}</h3>
+       <h3>${activity.question.replace(/\n/g, "<br>")}</h3>
 
         <p>${activity.instruction}</p>
 
@@ -358,6 +418,69 @@ function renderQuestion(activity) {
         <button
           class="activity-check"
           onclick="checkDragOrder()"
+        >
+          Check answer
+        </button>
+
+        <div id="activity-feedback"></div>
+
+        ${navigationButtons()}
+
+      </div>
+    `;
+  }
+
+
+
+    // ----------------------------------------
+  // DRAG AND DROP SORTING
+  // ----------------------------------------
+
+  if (activity.type === "drag-sort") {
+
+    const items = [...activity.items]
+      .sort(() => Math.random() - 0.5);
+
+    return `
+      <div class="activity-question">
+
+        <h3>${activity.question}</h3>
+
+        <p>${activity.instruction}</p>
+
+        
+        <div class="sort-zones">
+
+          ${activity.categories.map(category => `
+            <div
+              class="sort-zone"
+              data-category="${category}"
+            >
+              <h4>${category}</h4>
+              <div class="sort-drop-area"></div>
+            </div>
+          `).join("")}
+
+        </div>
+
+        <div class="drag-items">
+
+          ${items.map(item => `
+            <div
+              class="drag-item"
+              draggable="true"
+              data-value="${item}"
+            >
+              ${item}
+            </div>
+          `).join("")}
+
+        </div>
+
+
+        <button
+          class="activity-check"
+          onclick="checkDragSort()"
         >
           Check answer
         </button>
@@ -516,6 +639,59 @@ function checkMultipleChoice() {
 }
 
 
+function checkMultipleSelect() {
+
+  const activity = getCurrentActivity();
+
+  const selected = [
+    ...document.querySelectorAll(
+      'input[name="activity-answer"]:checked'
+    )
+  ].map(input => Number(input.value));
+
+  const feedback =
+    document.getElementById("activity-feedback");
+
+  if (selected.length === 0) {
+
+    feedback.innerHTML = `
+      <p class="incorrect">
+        Please select at least one answer.
+      </p>
+    `;
+
+    return;
+  }
+
+  const correctAnswers =
+    [...activity.answer].sort((a, b) => a - b);
+
+  const userAnswers =
+    [...selected].sort((a, b) => a - b);
+
+  const correct =
+    correctAnswers.length === userAnswers.length &&
+    correctAnswers.every(
+      (value, index) => value === userAnswers[index]
+    );
+
+  if (correct) {
+
+    feedback.innerHTML = `
+      <p class="correct">
+        ✓ ${activity.correctFeedback}
+      </p>
+    `;
+
+  } else {
+
+    feedback.innerHTML = `
+      <p class="incorrect">
+        ${activity.incorrectFeedback}
+      </p>
+    `;
+  }
+}
 // ========================================
 // SINGLE FILL-IN
 // ========================================
@@ -689,8 +865,13 @@ function setupDragAndDrop() {
       item.addEventListener("dragend", () => {
         item.classList.remove("dragging");
       });
+
     });
 
+
+  // ----------------------------------------
+  // ORDERING DROP BOXES
+  // ----------------------------------------
 
   document.querySelectorAll(".drop-box")
     .forEach(box => {
@@ -722,6 +903,41 @@ function setupDragAndDrop() {
 
         draggedItem = null;
       });
+
+    });
+
+
+  // ----------------------------------------
+  // SORTING DROP ZONES
+  // ----------------------------------------
+
+  document.querySelectorAll(".sort-zone")
+    .forEach(zone => {
+
+      zone.addEventListener("dragover", event => {
+        event.preventDefault();
+        zone.classList.add("drag-over");
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("drag-over");
+      });
+
+      zone.addEventListener("drop", event => {
+
+        event.preventDefault();
+        zone.classList.remove("drag-over");
+
+        if (!draggedItem) return;
+
+        const dropArea =
+          zone.querySelector(".sort-drop-area");
+
+        dropArea.appendChild(draggedItem);
+
+        draggedItem = null;
+      });
+
     });
 }
 
@@ -768,6 +984,65 @@ function checkDragOrder() {
     ? `<p class="correct">✓ Correct!</p>`
     : `<p class="incorrect">Not quite — try again.</p>`;
 }
+
+
+function checkDragSort() {
+
+  const activity = getCurrentActivity();
+
+  let allCorrect = true;
+
+  document.querySelectorAll(".sort-zone")
+    .forEach(zone => {
+
+      const category =
+        zone.dataset.category;
+
+      const items =
+        zone.querySelectorAll(".drag-item");
+
+      items.forEach(item => {
+
+        const value =
+          item.dataset.value;
+
+        const correctCategory =
+          activity.answer[value];
+
+        if (correctCategory !== category) {
+          allCorrect = false;
+        }
+
+      });
+
+    });
+
+
+  const feedback =
+    document.getElementById("activity-feedback");
+
+
+  // Check that every item has been placed
+  const placedItems =
+    document.querySelectorAll(".sort-zone .drag-item");
+
+  if (placedItems.length !== activity.items.length) {
+
+    feedback.innerHTML = `
+      <p class="incorrect">
+        Please sort all the items before checking your answer.
+      </p>
+    `;
+
+    return;
+  }
+
+
+  feedback.innerHTML = allCorrect
+    ? `<p class="correct">✓ Correct!</p>`
+    : `<p class="incorrect">Not quite — try again.</p>`;
+}
+
 
 // ========================================
 // ESCAPE KEY
