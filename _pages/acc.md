@@ -101,8 +101,57 @@ body{background:var(--bg);color:#fff}
 .print-mode .graph-grid{grid-template-rows:repeat(4,170px);row-gap:22px}
 .print-mode .arch-card{height:170px}
 .print-mode .info button{display:none}
-.print-mode .foot{margin:14px 0 0}
-.print-mode .logo{max-height:60px}
+.print-mode .foot {
+  margin: 14px 0 0;
+}
+
+.print-mode .logo {
+  max-height: 55px;
+}
+/* Print / PDF fixes */
+.print-mode .arch-card .title {
+  color: #fff !important;
+}
+
+.print-mode .arch-card.before .title,
+.print-mode .arch-card.connected .title,
+.print-mode .arch-card.after .title {
+  color: #000 !important;
+}
+
+.print-mode .foot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.print-mode .foot > div:first-child {
+  color: #fff !important;
+}
+
+.print-mode .foot > div:first-child a {
+  color: #fff !important;
+}
+
+.print-mode .foot > div:last-child {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  white-space: nowrap;
+}
+
+.print-mode .foot .logo {
+  display: block;
+  width: auto;
+  max-width: 150px;
+  max-height: 55px;
+  object-fit: contain;
+}
+
+
 @media print{
 *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 html,body{background:var(--bg)!important;margin:0!important}
