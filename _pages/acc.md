@@ -1,1899 +1,373 @@
 ---
 layout: splash
 permalink: /
-title: ""          
-search: false      
+title: ""
+search: false
 ---
 
-
-
 <style>
-
-:root {
-  --bg: #042f39; 
-  --purple: #6c2a68;
-  --cyan: #0C5D79; 
-  --box-stroke: #ffffff;
-  --panel-dark: #4b1f45;
-  --muted: #cfc8b5;
-  --light: #ffffff;
-  --pink: #6c2a68;
-}
-
-
-
-body {
-  background: var(--bg);
-  color: var(--light);
-}
-
-
-.graph-grid {
-  display: grid;
-  position: relative;
-
-  margin-top: 1rem;
- row-gap: 30px !important;   
-column-gap: 10px; 
-
-
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(4, minmax(180px, auto));
-
-  grid-template-areas:
-    "von caches . vector roofline ."
-    ". machine gpu . strong weak"
-    ". . mpi shared . ."
-    ". . . . . ."
-    ". . . . . .";
-
-  justify-items: center;
-  align-items: center;
-  z-index: 1;
-
-}
-
-
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: 1px;
-}
-
-
-.card-content:hoover{
-background: #064756;      
-  transform: translateY(-2px);  
-  box-shadow: 0 4px 8px rgba(0,0,0,0.4); 
-  filter: brightness(1.1);  
-
-}
-
-.arch-card {
-  position: relative;
-  width: 150px;
-  height: 200px;
-  margin: 0 auto;
-  background: var(--cyan);
-  
-  border-radius: 22px;
-  border: 4px solid var(--box-stroke);
-  
-  
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-}
-
-
-
-.arch-logos {
-  width: 200px;
-  height: 150px;
-
-  border-radius: 24px;
-
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 18px;
-
-  padding: 24px 22px;
-  cursor: default;
-}
-
-
-.pos-cc                 { grid-row: 1; grid-column: 6; }
-.pos-von-neumann        { grid-row: 1; grid-column: 1; }
-.pos-caches             { grid-row: 1; grid-column: 2; }
-.pos-machine-arch       { grid-row: 2; grid-column: 2; }
-.pos-gpu                { grid-row: 2; grid-column: 3; }
-.pos-mpi                { grid-row: 3; grid-column: 3; }
-.pos-shared-memory      { grid-row: 4; grid-column: 4; }
-.pos-vectorisation      { grid-row: 1; grid-column: 4; }
-.pos-roofline           { grid-row: 1; grid-column: 5; }
-.pos-strong-scaling     { grid-row: 2; grid-column: 5; }
-.pos-weak-scaling       { grid-row: 2; grid-column: 6; }
-.pos-instructions      { grid-row: 3; grid-column: 1; }
-.pos-link              { grid-row: 4; grid-column: 1; }
-.pos-logos             { grid-row: 3; grid-column: 6; }
-
-
-
-
-.arch-card:hover {
-  transform: translateY(-2px);
-  filter: brightness(0.97);
-  background: var(--pink);
-}
-
-.arch-card .title {
-  font-weight: 700;
-  font-size: 20px;
-  text-align: center;
-  line-height: 1.2;
-  margin-left:0.1rem;
-  margin-right:0.1rem;
-}
-
-
-.arch-card.active {
-  background: var(--pink);
-  opacity: 1;
-  transform: translateY(-2px);
-  display: flex;
-  align-items: center;
-}
-
-.arch-card.active .title {
-  font-size: 15px;
-  margin-bottom:0.1rem !important;
-    margin-top:0.1rem !important;
-}
-
-.arch-card.active .btn {
-  background: #ffffff;  
-  color: var(--bg) ;    
-  font-weight: 600;
-  font-size: 18px;
-  width: 130px;
-  text-align: center;
-  border-radius: 22px;
-}
-
-.arch-card.active .btn:hover {
-  background: #ffffff;    
-  color: #000000; 
-}
-
-
-
-
-
-
-.arch-card.active .card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;  
-  align-items: center;      
-  height: 100%;
-  gap: 1px;                
-}
-
-.arch-card.active .actions {
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;
-  gap: 2px;
-  max-height: 200px;               
-}
-
-
-
-
-
-
-
-
-.arch-card .actions {
-  max-height: 0;
-  overflow: hidden;
-}
-
-
-
-
-.arch-card.before {
-  background: #c4b2a1;
-  color: #000000;
-}
-
-.arch-card.connected {
-  background: #7f9a79;
-  color: #000000;
-}
-
-.arch-card.after {
-  background: #a696a5;
-  color: #000000;
-}
-
-
-.arch-card.unrelated {
-  background: #005e80;
-  color: #ffffff;
-  opacity: 1;
-  border: 4px solid #ffffff;
-}
-
-
-
-
-
-#arrows-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-
-
-
-.arrow {
-  stroke: #355f6b;
-  stroke-width: 2;
-  fill: none;
-    stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-
-.arrow.active {
-  opacity: 1;
-}
-
-.arrow-before {
-  stroke: #c4b2a1;                
-  stroke-dasharray: 6 6;         
-}
-
-.arrow-required {
-  stroke: #7f9a79;                
-}
-
-.arrow-after {
-  stroke: #ABDFE3;                
-}
-
-
-
-
-.video-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.video-modal-content {
-  background: #6c2a68;
-  border-radius: 16px;
-  padding: 24px;
-  width: 90%;
-  max-width: 900px;
-  color: white;
-  position: relative;
-}
-
-.video-modal h2 {
-  margin: 0 0 4px 0;
-  font-size: 50px;
-  text-align: center;
-   color: #ffffff;
-}
-
-.video-modal p {
-  margin: 0 0 16px 0;
-  opacity: 0.85;
-    color: #ffffff;
-}
-
-.video-wrapper {
-  position: relative;
-  padding-top: 56.25%;
-}
-
-.video-wrapper iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-}
-
-
-
-
-.arch-ins {
-  width: 300px;
-  min-height: 100px;
-
-  background: #042f39; 
-
-
-  padding: 24px;
-  cursor: default;
-}
-
-
-.arch-ins:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.05);
-}
-
-
-
-.arch-ins .title {
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  text-align: center;
-  color: #ffe8a3;
-}
-
-.arch-ins p {
-  font-size: 18px;
-  line-height: 1.55;
-  color: #f3eee2;
-  text-align: center;
-  opacity: 0.9;
-}
-
-
-.arch-ins a {
-  color: #ffffff !important;
-  text-decoration: underline;
-}
-
-.arch-ins a:hover,
-.arch-ins a:focus-visible {
-  color: #e6e0d4;   /* slightly softer white */
-}
-
-.arch-ins .card-content p {
-  color: #FFF8DC;
-}
-
-
-.legend {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.legend-item {
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: center;
-  column-gap: 12px;
-
-  font-size: 17px;
-  font-weight: 500;
-  color: #ffffff;
-
-  margin: 0; 
-}
-
-.legend-item h1{
-  font-size: 20px !important;
-  margin-left:30px !important;
-  margin-top: 15px!important;
-}
-
-.legend h1{
-font-size:20px;
-margin-left:10px;
- font-weight: 500;
-  color: #ffffff;
-}
-
-
-#link.arch-ins {
-  width: 300px;
-  min-height: auto;
-  padding: 12px 16px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: var(--pink);
-  border-radius: 16px;
-  border: 2px solid var(--box-stroke);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  transition: transform 0.2s, filter 0.2s;
-}
-
-
-
-
-#link.arch-ins a {
-  font-size: 20px;
-  font-weight: 600;
-  color: #042f39;
-  text-align: center;
-  width: 100%;
-  margin: 0;
-  cursor: pointer;
-}
-
-
-
-.logo-small {
-  max-width: 100px;
-  max-height:100px;
-  width: auto; height: auto; object-fit: contain; display: block;
-}
-
-.logo-medium {
-  max-width: 200px;
-  max-height:200px;
-  width: auto; height: auto; object-fit: contain; display: block;
-}
-
-.logo-large {
-  max-width: 200px;
-  max-height:200px;
-  width: auto; height: auto; object-fit: contain; display: block;
-}
-
-
-
-
-
-.color-box {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  border: 4px solid var(--box-stroke);
-  margin: 0;
-}
-
-
-
-.color-box.before {
-  background: #c4b2a1;
-}
-
-.color-box.connected {
-  background: #7f9a79;
-}
-
-.color-box.after {
-  background: #a696a5;
-}
-
-.page-title-box {
-  width: 100%;
-  max-width: 1100px;
-
-  background: linear-gradient(180deg, #6c2a68 0%, #4b1f45 100%);
-  border-radius: 26px;
-  border: 1px solid var(--box-stroke);
-
-  box-shadow:
-    0 12px 28px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255,255,255,0.15);
-
-  padding: 28px 36px;
-  margin: 0 auto 32px auto;
-
-  text-align: center;
-}
-
-.page-title-box h1 {
-  font-size: 25px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-
-  color: #ffffff;
-  margin-top: 0.15rem;
-    margin-bottom: 0.15rem;
-}
-
-.page-title-box p {
-  font-size: 15px;
-  line-height: 1.5;
-  color: #f3eee2;
-  opacity: 0.9;
-  margin: 0;
-}
-
-
-
-
-.skip-link {
-  position: absolute;
-  left: -999px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  z-index: 100;
-}
-
-.skip-link:focus {
-  left: 10px;
-  top: 10px;
-  width: auto;
-  height: auto;
-  background: #000;
-  color: #fff;
-  padding: 8px 12px;
-  text-decoration: none;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-
-
-
-.canvas-scale {
-  transform-origin: top center;
-}
-
-
-.btn {
-  background: #ffffff;  
-  color: #042f39;
-  font-weight: 600;
-  font-size: 16px;
-  padding: 6px 12px;
-  border-radius: 22px;
-  border: 2px solid #ffffff;
-  display: inline-block;
-  text-align: center;
-}
-
-
-.btn:hover,
-.btn:focus-visible {
-  background: #ffffff;
-  color: #000000;
-  outline: 3px solid #ffe66d;
-  outline-offset: 3px;
-}
-
-@media (max-width: 768px) {
-body {
-  background: var(--bg);
-}
-  .canvas-scale {
-    transform: scale(0.7);
-  }
-}
-
-
-.initial-content,
-.page-content,
-#main {
-  overflow: visible !important;
-}
-
-
-.activity-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-
-  display: none;
-
-  align-items: center;
-  justify-content: center;
-
-  z-index: 10000;
-
-  padding: 20px;
-}
-
-.activity-modal-content {
-  position: relative;
-
-  width: 90%;
-width: 850px;
-  height: 90vh;
-
-  overflow-y: auto;
-
-  background: #6c2a68;
-  color: #ffffff;
-
-  border-radius: 22px;
-  border: 3px solid #ffffff;
-
-  padding: 35px;
-}
-
-.activity-modal-content h2 {
-  text-align: center;
-  font-size: 32px;
-  margin-top: 0;
-}
-
-.activity-modal-content h3 {
-  color: #ffffff;
-}
-
-.activity-close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-
-  background: none;
-  border: none;
-
-  color: #ffffff;
-
-  font-size: 32px;
-  cursor: pointer;
-}
-
-.activity-question {
-  margin-top: 25px;
-}
-
-#activity-question p {
-  white-space: pre-line;
-}
-
-.activity-question h3 {
-  font-size: 22px;
-  line-height: 1.4;
-}
-
-.activity-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 25px 0;
-}
-
-
-.activity-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px;
-  background: #042f39;
-  border: 2px solid #ffffff;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #ffffff;
-}
-
-.activity-option:hover {
-  background: #0C5D79;
-}
-
-.activity-option input {
-  transform: scale(1.3);
-}
-
-.activity-check,
-.activity-next {
-  background: #ffffff;
-  color: #042f39;
-
-  border: none;
-  border-radius: 22px;
-
-  padding: 10px 22px;
-
-  font-size: 16px;
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-.activity-check:hover,
-.activity-next:hover {
-  background: #ffe66d;
-}
-
-#activity-feedback {
-  margin-top: 0px;
-  font-size: 18px;
-}
-
-.correct {
-  color: #7f9a79; /* green */
-  font-weight: 700;
-}
-
-.incorrect {
-  color: #e07a7a; /* red */
-  font-weight: 700;
-}
-
-.feedback-text {
-  color: #ffffff;
-  font-weight: 400;
-}
-
-.activity-text-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px;
-  margin: 15px 0 20px;
-  background: #ffffff;
-  color: #042f39;
-  border: 2px solid #ffffff;
-  border-radius: 10px;
-  font-size: 18px;
-}
-
-.drag-items {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 25px 0;
-  flex-wrap: wrap;
-}
-
-.drag-item {
-  padding: 12px 22px;
-  background: #ffffff;
-  color: #042f39;
-  border-radius: 10px;
-  border: 2px solid #ffffff;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: grab;
-  user-select: none;
-}
-
-.drag-item:active {
-  cursor: grabbing;
-}
-
-.drag-item.dragging {
-  opacity: 0.5;
-}
-
-.drop-zone {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 30px 0;
-}
-
-.drop-box {
-  width: 150px;
-  min-height: 55px;
-  border: 2px dashed #ffffff;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-}
-
-.drop-box.drag-over {
-  background: #0C5D79;
-}
-
-.drop-box .drag-item {
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-
-.activity-navigation {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-.activity-previous,
-.activity-next {
-  background: #ffffff;
-  color: #042f39;
-  border: none;
-  border-radius: 22px;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.activity-previous:hover,
-.activity-next:hover {
-  background: #ffe66d;
-}
-
-
-.activity-code {
-  background: #042f39;
-  color: #ffffff;
-  border: 2px solid #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
-  overflow-x: auto;
-  text-align: left;
-  font-family: monospace;
-  font-size: 15px;
-  line-height: 1.6;
-  white-space: pre-wrap;
-}
-
-
-.fill-in-fields {
-  margin: 25px 0;
-}
-
-.fill-in-field {
-  margin-bottom: 20px;
-}
-
-.fill-in-field label {
-  display: block;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #ffffff;
-}
-
-.fill-in-field .activity-text-input {
-  margin: 0;
-}
-
-.activity-field-feedback {
-  margin-top: 6px;
-  min-height: 24px;
-}
-
-
-/* ========================================
-   DRAG & DROP SORTING
-   ======================================== */
-
-.sort-zones {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 25px;
-}
-
-.sort-zone {
-  border: 2px dashed #6c2a68;
-  border-radius: 10px;
-  min-height: 180px;
-  padding: 15px;
-  background: #f8f5f8;
-  transition: all 0.2s ease;
-}
-
-.sort-zone h4 {
-  margin: 0 0 15px 0;
-  text-align: center;
-  font-size: 1.1rem;
-  color: #6c2a68;
-}
-
-.sort-drop-area {
-  min-height: 120px;
-}
-
-
-
-.sort-zone.drag-over {
-  border-style: solid;
-  background: #eee5ef;
-  transform: scale(1.01);
-}
-
-
-
-.sort-zone .drag-item {
-  margin-bottom: 8px;
-}
-
-
-
-
-@media (max-width: 700px) {
-
-  .sort-zones {
-    grid-template-columns: 1fr;
-  }
-
-}
-
-
-.multiple-select-feedback {
-  list-style: none;
-  padding: 0;
-  margin: 15px 0 0 0;
-}
-
-.multiple-select-feedback li {
-  padding: 5px 5px;
-  margin-bottom: 6px;
-  border-radius: 6px;
-}
-
-.feedback-correct {
-  background: #eaf6ea;
-}
-
-.feedback-incorrect {
-  background: #fcecec;
-}
-
-#activity-feedback p {
-  margin: 1px 0;
-  color: #ffffff !important;
-}
-
-#activity-feedback p {
-  white-space: pre-line;
-}
-
-
-.multiple-select-feedback {
-  list-style: none;
-  padding: 0;
-  margin: 15px 0 0 0;
-}
-
-.multiple-select-feedback li {
-  padding: 5px 5px;
-  margin-bottom: 6px;
-  border-radius: 6px;
-  color: #ffffff;
-}
-
-.feedback-correct {
-  color: #ffffff !important;
-}
-
-.feedback-incorrect {
-  color: #ffffff !important;
-}
-
-
+:root{--bg:#042f39;--purple:#6c2a68;--cyan:#0C5D79;--stroke:#fff;--before: #cea064;--req:#5f9a5a;--after:#c3a6c4;--line:#6f9aa6}
+body{background:var(--bg);color:#fff}
+#main{max-width:none!important}
+.wrap{max-width:1720px;margin:0 auto;padding:0 12px}
+.hero{background:linear-gradient(180deg,#6c2a68,#4b1f45);border:1px solid #fff;border-radius:26px;padding:26px 34px;margin:1rem auto 18px;text-align:center}
+.hero h1{font-size:28px;font-weight:900;margin:0 0 6px;color:#fff}
+.hero p{margin:4px auto;max-width:820px;font-size:16px;line-height:1.5;color: #f3eee2}
+.hero .meta{font-size:14px;opacity:.85}
+.hero .authors{margin:8px auto 2px; font-size:15px; font-weight:700; color:#fff;}
+.hero .affiliation{margin:2px auto 8px;font-size:14px; color:#f3eee2;}
+.stage{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.side{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;align-content:start}
+.main-col{min-width:0}
+@media (min-width:1540px){
+.stage{grid-template-columns:250px minmax(0,1fr) 250px}
+.side{display:flex;flex-direction:column}
+}
+.panel{background:#064756;border:2px solid #fff;border-radius:16px;padding:16px 20px}
+.panel h2{font-size:19px;margin:0 0 8px;color:#fff}
+.panel ol,.panel ul{margin:0;padding-left:20px;font-size:15px;line-height:1.5;color:#f3eee2}
+.panel p{font-size:15px;line-height:1.5;color:#f3eee2;margin:0 0 6px}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;font-size:15px;color:#fff}
+.sw{width:30px;height:30px;border-radius:7px;border:3px solid #fff;display:block}
+.sw.sel{background:var(--purple)}.sw.before{background:var(--before);border-style:dashed}.sw.req{background:var(--req)}.sw.after{background:var(--after)}.sw.none{background:#005e80}.sw.idle{background:var(--cyan)}
+.ln{width:30px;height:0;border-top:3px solid;display:block}
+.ln.d{border-top-style:dashed;border-color:var(--before)}.ln.s{border-color:var(--req)}.ln.a{border-color:var(--after)}
+.scroller{overflow-x:auto;padding-bottom:8px}
+.graph-grid{display:grid;position:relative;min-width:980px;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,minmax(200px,auto));row-gap:30px;column-gap:10px;justify-items:center;align-items:center}
+#arrows-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.arrow{stroke:var(--line);stroke-width:2.5;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.arrow-before{stroke:var(--before);stroke-dasharray:6 6}.arrow-required{stroke:var(--req)}.arrow-after{stroke:var(--after)}
+.arch-card{position:relative;z-index:1;width:150px;height:200px;background:var(--cyan);border-radius:22px;border:4px solid #fff;cursor:pointer;display:flex;flex-direction:column;transition:transform .15s,background .15s}
+.arch-card:hover{transform:translateY(-2px);background:var(--purple)}
+.arch-card:focus-visible{outline:3px solid #ffe66d;outline-offset:3px}
+.card-content{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:2px}
+.arch-card .title{font-weight:700;font-size:20px;text-align:center;line-height:1.2;margin:0 .3rem;color:inherit}
+.arch-card .actions{max-height:0;overflow:hidden;visibility:hidden}
+.arch-card.active{background:var(--purple);transform:translateY(-2px)}
+.arch-card.active .title{font-size:15px;margin:.1rem}
+.arch-card.active .actions{max-height:200px;visibility:visible;display:flex;flex-direction:column;align-items:center;gap:4px}
+.btn{background:#fff;color:#042f39;font-weight:600;font-size:16px;padding:6px 12px;border-radius:22px;border:2px solid #fff;display:inline-block;width:130px;text-align:center;text-decoration:none}
+.btn:hover,.btn:focus-visible{color:#000;outline:3px solid #ffe66d;outline-offset:3px}
+.arch-card.before{background:var(--before);color:#000}.arch-card.connected{background:var(--req);color:#000}.arch-card.after{background:var(--after);color:#000}
+.arch-card.unrelated{background:#005e80;color:#fff}
+.arch-card.before{border-style:dashed}
+.tag{display:none;margin-top:6px;padding:2px 10px;border-radius:14px;background:#000;color:#fff;font-size:13px;font-weight:700;line-height:1.4;text-align:center}
+.tag:not(:empty){display:inline-block}
+.arch-card.active .tag{display:none}
+.info{background:var(--purple);border:3px solid #fff;border-radius:16px;padding:16px 20px}
+.info h2{margin:0 0 4px;font-size:21px;line-height:1.25;color:#fff}
+.info .lect{margin:0 0 10px;font-size:14px}
+.info p{font-size:15px;line-height:1.5;margin:0 0 10px;color:#fff}
+.info dl{display:grid;grid-template-columns:1fr;gap:2px;margin:12px 0;font-size:14px;line-height:1.45}
+.info dt{font-weight:700;color:#ffe8a3;margin-top:8px}.info dd{margin:0}
+.legend-note{font-size:14px!important;margin-top:10px!important}
+.info button{background:#fff;color:#042f39;border:0;border-radius:22px;padding:8px 18px;font-weight:700;cursor:pointer}
+.info button:hover{background:#ffe66d}
+.foot{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;margin:24px 0 32px}
+.foot a{color:#fff;text-decoration:underline}
+.logo{max-width:200px;max-height:110px;width:auto;height:auto;object-fit:contain}
+.video-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:9999}
+.video-modal-content{background:#6c2a68;border-radius:16px;padding:24px;width:90%;max-width:900px;position:relative}
+.video-modal h2{margin:0 0 4px;font-size:36px;text-align:center;color:#fff}
+.video-modal p{margin:0 0 16px;text-align:center;color:#fff}
+.video-wrapper{position:relative;padding-top:56.25%}
+.video-wrapper iframe{position:absolute;inset:0;width:100%;height:100%;border-radius:12px}
+.vclose{position:absolute;top:8px;right:12px;font-size:28px;background:none;border:none;color:#fff;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.arch-card{transition:none}}
+.pdf-btn{background:#fff;color:#042f39;border:2px solid #fff;border-radius:22px;padding:8px 18px;font-weight:700;font-size:15px;cursor:pointer}
+.pdf-btn:hover,.pdf-btn:focus-visible{background:#ffe66d;outline:3px solid #ffe66d;outline-offset:3px}
+
+/* PDF / print: one A3 landscape page, fixed width so the arrows line up */
+@page{size:420mm 297mm;margin:0}
+.print-mode .wrap{width:1580px;max-width:none;margin:0 auto;padding:22px 30px;box-sizing:border-box}
+.print-mode .hero{padding:14px 30px;margin:0 0 14px}
+.print-mode .hero h1{font-size:30px}
+.print-mode .hero p{font-size:15px;margin:2px auto}
+.print-mode .stage{grid-template-columns:250px minmax(0,1fr) 250px;gap:16px}
+.print-mode .side{display:flex;flex-direction:column;gap:12px}
+.print-mode .panel{padding:12px 16px}
+.print-mode .panel h2{font-size:17px}
+.print-mode .panel ol,.print-mode .panel ul,.print-mode .panel p,.print-mode .legend{font-size:14px}
+.print-mode .scroller{overflow:visible;padding:0}
+.print-mode .graph-grid{grid-template-rows:repeat(4,170px);row-gap:22px}
+.print-mode .arch-card{height:170px}
+.print-mode .info button{display:none}
+.print-mode .foot{margin:14px 0 0}
+.print-mode .logo{max-height:60px}
+@media print{
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{background:var(--bg)!important;margin:0!important}
+.masthead,.page__footer,.skip-links,.sidebar,.no-print{display:none!important}
+.arch-card{transition:none}
+}
+
+/* Activity modal styles (unchanged from your version) */
+.activity-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+.activity-modal-content{position:relative;width:850px;max-width:100%;height:90vh;overflow-y:auto;background:#6c2a68;color:#fff;border-radius:22px;border:3px solid #fff;padding:35px}
+.activity-modal-content h2{text-align:center;font-size:32px;margin-top:0;}
+.activity-modal-content h3{color:#fff;font-size:22px;line-height:1.4}
+.activity-close{position:absolute;top:10px;right:15px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer}
+.activity-question{margin-top:25px}
+#activity-question p,#activity-feedback p{white-space:pre-line}
+.activity-options{display:flex;flex-direction:column;gap:12px;margin:25px 0}
+.activity-option{display:flex;align-items:center;gap:12px;padding:15px;background:#042f39;border:2px solid #fff;border-radius:12px;cursor:pointer;color:#fff}
+.activity-option:hover{background:#0C5D79}
+.activity-option input{transform:scale(1.3)}
+.activity-check,.activity-next,.activity-previous{background:#fff;color:#042f39;border:none;border-radius:22px;padding:10px 22px;font-size:16px;font-weight:700;cursor:pointer}
+.activity-check:hover,.activity-next:hover,.activity-previous:hover{background:#ffe66d}
+#activity-feedback{font-size:18px}
+#activity-feedback p{margin:1px 0;color:#fff!important}
+.correct{color:#7f9a79;font-weight:700}.incorrect{color:#e07a7a;font-weight:700}.feedback-text{color:#fff;font-weight:400}
+.activity-text-input{width:100%;box-sizing:border-box;padding:14px;margin:15px 0 20px;background:#fff;color:#042f39;border:2px solid #fff;border-radius:10px;font-size:18px}
+.drag-items{display:flex;justify-content:center;gap:15px;margin:25px 0;flex-wrap:wrap}
+.drag-item{padding:12px 22px;background:#fff;color:#042f39;border-radius:10px;border:2px solid #fff;font-size:18px;font-weight:700;cursor:grab;user-select:none}
+.drag-item.dragging{opacity:.5}
+.drop-zone{display:flex;justify-content:center;gap:15px;margin:30px 0}
+.drop-box{width:150px;min-height:55px;border:2px dashed #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:5px}
+.drop-box.drag-over{background:#0C5D79}
+.drop-box .drag-item{width:100%;box-sizing:border-box;text-align:center}
+.activity-navigation{display:flex;justify-content:space-between;gap:15px;margin-top:30px}
+.activity-code{background:#042f39;color:#fff;border:2px solid #fff;border-radius:12px;padding:20px;margin:20px 0;overflow-x:auto;text-align:left;font-family:monospace;font-size:15px;line-height:1.6;white-space:pre-wrap}
+.fill-in-fields{margin:25px 0}.fill-in-field{margin-bottom:20px}
+.fill-in-field label{display:block;font-weight:700;margin-bottom:8px;color:#fff}
+.fill-in-field .activity-text-input{margin:0}
+.activity-field-feedback{margin-top:6px;min-height:24px}
+.sort-zones{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:25px}
+.sort-zone{border:2px dashed #6c2a68;border-radius:10px;min-height:180px;padding:15px;background:#f8f5f8;transition:all .2s}
+.sort-zone h4{margin:0 0 15px;text-align:center;font-size:1.1rem;color:#6c2a68}
+.sort-drop-area{min-height:120px}
+.sort-zone.drag-over{border-style:solid;background:#eee5ef;transform:scale(1.01)}
+.sort-zone .drag-item{margin-bottom:8px}
+@media (max-width:700px){.sort-zones{grid-template-columns:1fr}}
+.multiple-select-feedback{list-style:none;padding:0;margin:15px 0 0}
+.multiple-select-feedback li{padding:5px;margin-bottom:6px;border-radius:6px;color:#fff}
+.feedback-correct{background:#eaf6ea;color:#fff!important}.feedback-incorrect{background:#fcecec;color:#fff!important}
 </style>
 
+<main id="main-content" class="wrap">
 
-
-
-
-
-
-<br>
-
-<main id="main-content">
-
-
-<div class="page-title-box">
+<div class="hero">
   <h1>High-Performance Computing Concepts</h1>
+  <p class="authors">
+    Eva Fernández Amez · Thomas Flynn · Mladen Ivkovic · Christopher Marcotte · Tobias Weinzierl
+  </p>
+  <p class="meta">Interactive Research e-Poster · Supercomputing 26 (SC26), Chicago</p>
 </div>
 
+<div class="stage">
 
-
-<div class="canvas-scale">
-  <div class="graph-grid">
-
-    <svg id="arrows-layer"></svg>
-
-    <!-- cards aquí -->
-
-
-
-
-
-<div
-  id="instructions"
-  class="arch-ins pos-instructions"
->
-  
-
-  <div class="legend">
-    <div class="legend-item">
-      <span class="color-box before"></span>
-     <h1> Previous suggested lecture</h1>
-    </div>
-    <div class="legend-item">
-      <span class="color-box connected"></span>
-      <h1>Previous required lecture</h1>
-    </div>
-    <div class="legend-item">
-      <span class="color-box after"></span>
-     <h1> Next suggested lecture</h1>
-    </div>
-  </div>
-
-  
-</div>
-
-
-<div id="link" class="arch-ins pos-link">
-  <a href="https://training-academy.dirac.ac.uk/course/section.php?id=66">
-    Access the full course on the DiRAC Training Academy
-  </a>
-</div>
-
-
-
-
-
-<div
-  id="logos"
-  class="arch-logos pos-logos"
->
-  
-
-  <div class="legend">
+<div class="side">
+<section class="panel" aria-labelledby="h-how">
+<h2 id="h-how">How to use this map</h2>
+<ol>
+<li>Select a topic card. It highlights the topics around it.</li>
+<li>Read the summary beside the map: what it covers and what to study before and after.</li>
+<li>Press <b>Lecture</b> to watch the video, or <b>Activities</b> to test yourself.</li>
+</ol>
+</section>
+<section class="panel" aria-labelledby="h-key">
+<h2 id="h-key">Legend</h2>
 <div class="legend">
-  <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/durham.png?raw=true" class="logo-large" alt="Durham">
-  <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/ukri.png?raw=true" class="logo-medium" alt="UKRI">
-  <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/dirac.png?raw=true" class="logo-small" alt="DiRAC">
+<span class="sw idle"></span><span>Topic (nothing selected)</span>
+<span class="sw sel"></span><span>Selected topic</span>
+<span class="sw req"></span><span>Required before it: learn these first</span>
+<span class="sw before"></span><span>Suggested before it: helpful background</span>
+<span class="sw after"></span><span>Comes next: what this unlocks</span>
+<span class="ln s"></span><span>Solid line: required link</span>
+<span class="ln d"></span><span>Dashed line: suggested link</span>
+<span class="ln a"></span><span>Arrowhead points to the later topic</span>
+</div>
+<p class="legend-note">Related cards also carry a text label (Learn first, Background, Comes next), so the map never relies on colour alone.</p>
+</section>
 </div>
 
-  </div>
+<div class="main-col">
+<div class="scroller" tabindex="0" aria-label="Knowledge graph. Scroll sideways on small screens.">
+<div class="graph-grid" id="graph"><svg id="arrows-layer" aria-hidden="true"></svg></div>
+</div>
+</div>
+
+<div class="side">
+<section class="panel" aria-labelledby="h-inside">
+<h2 id="h-inside">What is inside each topic</h2>
+<ul>
+<li><b>Lecture:</b> a short video from a Durham University HPC lecturer.</li>
+<li><b>Activities:</b> interactive exercises with instant feedback: multiple choice, fill-in-the-code, short answers and drag-and-drop sorting.</li>
+<li>10 topics, 4 lecturers, one learning path from hardware to scaling.</li>
+</ul>
+</section>
+<section class="info" id="info" aria-live="polite">
+<h2>Select a topic to begin</h2>
+<p>Good starting point: <b>Von Neumann Architecture</b>, the top-left card. Everything else builds on it. On a phone, scroll the map sideways.</p>
+</section>
+</div>
 
 </div>
 
+<div class="foot">
 
-<div
-  id="logos"
-  class="arch-logos pos-cc"
->
-  <div class="legend">
-  
-  <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/cc.png?raw=true" alt="Logo 1">
-  </div>
-
+<div>Source, activities and teaching materials: <a href="https://github.com/mzhc13/high-performance-computing-concepts-course">course repository on GitHub</a></div>
+<div><img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/durham.png?raw=true" class="logo" alt="Durham University"> <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/ukri.png?raw=true" class="logo" alt="UKRI"></div>
 </div>
 
-
-
-
-
-
-<div
-  id="von-neumann"
-  class="arch-card pos-von-neumann"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-von-neumann"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Von Neumann Architecture</h2>
-
-    <div class="actions" id="actions-von-neumann">
-      <a class="btn" href="#"
-        onclick="openVideo('3ru-v3sAdqw?si=Jj8Koun21HpjFCLY','Von Neumann Architecture','Professor Tobias Weinzierl'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('von-neumann'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
+<div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title">
+<div class="video-modal-content">
+<h2 id="video-title">Title</h2>
+<p id="video-lecturer">Lecturer</p>
+<div class="video-wrapper"><iframe id="video-iframe" src="" title="Lecture video" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+<button class="vclose" aria-label="Close video" onclick="closeVideo()">×</button>
 </div>
-
-
-
-
-  
-  
-  
-
-
-  
- <div
-  id="caches"
-  class="arch-card pos-caches"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-caches"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Caches</h2>
-
-    <div class="actions" id="actions-caches">
-      <a class="btn" href="#"
-        onclick="openVideo('ZPXYoJJo8qA?si=ZlX967WyjtxgpLWm','Caches','Professor Tobias Weinzierl'); event.stopPropagation(); return false;">
-        Lecture
-        </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('caches'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-<div
-  id="machine-architectures"
-  class="arch-card pos-machine-arch"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-machine-architectures"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Machine Architectures (Flynn’s Taxonomy)</h2>
-
-    <div class="actions" id="actions-machine-architectures">
-      <a class="btn" href="#"
-        onclick="openVideo('jWFImJ-5Gtg?si=BBZou2CJvwDj7EC-','Machine Architectures (Flynn’s Taxonomy)','Dr. Mladen Ivkovic'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('machine-architectures'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-  
-<div
-  id="GPU"
-  class="arch-card pos-gpu"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-gpu"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">GPU Architecture</h2>
-
-    <div class="actions" id="actions-gpu">
-      <a class="btn" href="#"
-        onclick="openVideo('8axA0RUaxRA?si=kwFcCVbDKzJw3vw4','GPU Architecture','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('gpu'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-<div
-  id="MPI"
-  class="arch-card pos-mpi"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-mpi"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">MPI</h2>
-
-    <div class="actions" id="actions-mpi">
-      <a class="btn" href="#"
-        onclick="openVideo('i-88l2K9824?si=5hG4_gn3DE3_r6Tq','MPI','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('mpi'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-
- <div
-  id="vectorisation"
-  class="arch-card pos-vectorisation"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-vectorisation"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Vectorisation</h2>
-
-    <div class="actions" id="actions-vectorisation">
-      <a class="btn" href="#"
-        onclick="openVideo('7Z3JrE8SBgU?si=QB-EK98D3_63IAiq','Vectorisation','Dr. Thomas Flynn'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('vectorisation'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-<div
-  id="shared-memory"
-  class="arch-card pos-shared-memory"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-shared-memory"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Shared-Memory Parallel Paradigms</h2>
-
-    <div class="actions" id="actions-shared-memory">
-      <a class="btn" href="#"
-        onclick="openVideo('iwb17_aCSRA?si=NGorUytvUqWRMWEZ','Shared-Memory Parallel Paradigms','Dr. Mladen Ivkovic'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('shared-memory'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-<div
-  id="roofline"
-  class="arch-card pos-roofline"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-roofline"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Roofline</h2>
-
-    <div class="actions" id="actions-roofline">
-      <a class="btn" href="#"
-        onclick="openVideo('uhYFZrqe9VY?si=TbG28ic8nFSU0kAm','Roofline','Professor Tobias Weinzierl'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('roofline'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-<div
-  id="strong-scaling"
-  class="arch-card pos-strong-scaling"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-strong-scaling"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Strong Scaling</h2>
-
-    <div class="actions" id="actions-strong-scaling">
-      <a class="btn" href="#"
-        onclick="openVideo('99VgSkjLQM4?si=YqCN8fMLu2iB4Tt6','Strong Scaling','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('strong-scaling'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
- <div
-  id="weak-scaling"
-  class="arch-card pos-weak-scaling"
-  role="button"
-  tabindex="0"
-  aria-expanded="false"
-  aria-controls="actions-weak-scaling"
-  onclick="nodeClick(this, event);"
-  onkeydown="if(event.key==='Enter' || event.key===' ') { nodeClick(this, event); }"
->
-  <div class="card-content">
-    <h2 class="title">Weak Scaling</h2>
-
-    <div class="actions" id="actions-weak-scaling">
-      <a class="btn" href="#"
-        onclick="openVideo('dVZqpXi5BRE?si=pNSgIwWY38rt4W12','Weak Scaling','Dr. Christopher Marcotte'); event.stopPropagation(); return false;">
-        Lecture
-      </a>
-      <a class="btn"
-        href="#"
-        onclick="openActivity('weak-scaling'); event.stopPropagation(); return false;">
-        Activities
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
-<!-- Modal para video -->
-<div id="video-modal" class="video-modal" onclick="closeVideo()">
-  <div class="video-modal-content" onclick="event.stopPropagation();">
-    <h2 id="video-title">Title</h2>
-    <p id="video-lecturer">Lecturer</p>
-    <div class="video-wrapper">
-      <iframe id="video-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
-    <button onclick="closeVideo()" style="position:absolute;top:10px;right:10px;font-size:20px;background:none;border:none;color:#042f39;cursor:pointer;">×</button>
-  </div>
 </div>
 {% include activity-modal.html %}
-
-
-</div>
-
-</div>
-
-
 </main>
 
 <script>
+/* id, title, YouTube id, lecturer, grid row, grid col, summary */
+const TOPICS=[
+["von-neumann","Von Neumann Architecture","3ru-v3sAdqw?si=Jj8Koun21HpjFCLY","Professor Tobias Weinzierl",1,1,"The stored-program model of a computer: processor, memory and the bus between them. It explains the von Neumann bottleneck, why moving data usually costs more than computing on it."],
+["caches","Caches","ZPXYoJJo8qA?si=ZlX967WyjtxgpLWm","Professor Tobias Weinzierl",1,2,"The memory hierarchy, cache lines and data locality. Learn why the order in which you access memory can matter more than the arithmetic you do."],
+["machine-architectures","Machine Architectures (Flynn’s Taxonomy)","jWFImJ-5Gtg?si=BBZou2CJvwDj7EC-","Dr. Mladen Ivkovic",2,2,"Flynn’s taxonomy (SISD, SIMD, MISD, MIMD) as a map from hardware designs to the kinds of parallelism you can exploit."],
+["GPU","GPU Architecture","8axA0RUaxRA?si=kwFcCVbDKzJw3vw4","Dr. Christopher Marcotte",2,3,"How throughput-oriented, many-core GPUs differ from CPUs: thread hierarchy, memory and the kinds of problems that suit them."],
+["MPI","MPI","i-88l2K9824?si=5hG4_gn3DE3_r6Tq","Dr. Christopher Marcotte",3,3,"Distributed-memory programming with the Message Passing Interface: ranks, point-to-point messages and collective operations across nodes."],
+["vectorisation","Vectorisation","7Z3JrE8SBgU?si=QB-EK98D3_63IAiq","Dr. Thomas Flynn",1,4,"Using SIMD units to apply one instruction to several data items at once, and how data layout and loop structure let compilers do it."],
+["shared-memory","Shared-Memory Parallel Paradigms","iwb17_aCSRA?si=NGorUytvUqWRMWEZ","Dr. Mladen Ivkovic",4,4,"Multithreading on one node: sharing data between threads, race conditions and synchronisation."],
+["roofline","Roofline","uhYFZrqe9VY?si=TbG28ic8nFSU0kAm","Professor Tobias Weinzierl",1,5,"A visual performance model that shows whether code is limited by compute or by memory bandwidth, using arithmetic intensity."],
+["strong-scaling","Strong Scaling","99VgSkjLQM4?si=YqCN8fMLu2iB4Tt6","Dr. Christopher Marcotte",2,5,"Fixed problem size, more processors: how to measure speedup and parallel efficiency, and why serial fractions limit it (Amdahl’s law)."],
+["weak-scaling","Weak Scaling","dVZqpXi5BRE?si=pNSgIwWY38rt4W12","Dr. Christopher Marcotte",2,6,"Problem size grows with processor count: how to judge whether a code can tackle bigger problems on bigger machines."]
+];
 
-
-const relations = {
-"von-neumann": {
-  suggestedPrev: [],
-  requiredPrev: [],
-  next: [
-    { id: "caches", portFrom: "R", portTo: "L" },
-    { id: "machine-architectures", portFrom: "B", portTo: "L" }
-  ]
-}
-
-
-,
-
-  "caches": {
-    suggestedPrev: [],
-    requiredPrev: [ 
-    { id: "von-neumann", portFrom: "L", portTo: "R" }],
-    next: [
-    { id: "vectorisation", portFrom: "R", portTo: "L" }]
-  },
-
-"vectorisation": {
-  suggestedPrev: [
-    { id:"GPU", portFrom: "BL", portTo: "TR" },
-    { id:"shared-memory", portFrom: "B", portTo: "T" }
-  ],
-  requiredPrev: [
-    { id:"caches", portFrom: "L", portTo: "R" },
-    { id:"machine-architectures", portFrom: "TR", portTo: "BL" }
-  ],
-  next: [
-    {id: "roofline",  portFrom: "R", portTo: "L" }
-  ]
-}
-,
-
-  "machine-architectures": {
-  suggestedPrev: [],
-  requiredPrev: [
-  {id: "von-neumann", portFrom: "L", portTo: "B"}],
-  next: [
-    {id: "vectorisation", portFrom: "BL", portTo: "TR"},
-    {id: "GPU", portFrom: "R", portTo: "L"},
-    {id: "MPI", portFrom: "B", portTo: "L"},
-    {id: "shared-memory", portFrom: "B", portTo: "BL"}
-  ]
-},
-
-GPU: {
-  suggestedPrev: [],
-  requiredPrev: [{id: "machine-architectures", portFrom: "R", portTo: "L"}],
-  next: [
-    {id: "vectorisation", portFrom: "TR", portTo: "BL"},
-    {id: "shared-memory", portFrom: "R", portTo: "TL"}
-  ]
-},
-
-"shared-memory": {
-  suggestedPrev: [
-    {id: "MPI", portFrom: "L", portTo: "B"},
-    {id: "GPU", portFrom: "TL", portTo: "R"}
-  ],
-  requiredPrev: [
-  {id: "machine-architectures", portFrom: "BL", portTo: "B"}],
-  next: [
-    {id: "strong-scaling", portFrom: "R", portTo: "B"},
-    {id: "vectorisation", portFrom: "T", portTo: "B"}
-  ]
-},
-
-
-"MPI": {
-  suggestedPrev: [],
-  requiredPrev: [
-  {id: "machine-architectures", portFrom: "L", portTo: "B"}],
-  next: [
-    {id: "strong-scaling", portFrom: "R", portTo: "BL"},
-    {id: "shared-memory", portFrom: "B", portTo: "L"}
-  ]
-},
-
-"roofline": {
-  suggestedPrev: [],
-  requiredPrev: [
-  {id: "vectorisation", portFrom: "L", portTo: "R"}],
-  next: []
-},
-
-
-"strong-scaling": {
-  suggestedPrev: [
-    {id: "MPI", portFrom: "R", portTo: "L"},
-    {id: "shared-memory", portFrom: "B", portTo: "R"}
-  ],
-  requiredPrev: [],
-  next: [
-    {id: "weak-scaling", portFrom: "R", portTo: "L"}
-  ]
-},
-
-
-
-
-
-"weak-scaling": {
-  suggestedPrev: [],
-  requiredPrev: [{id:
-  "strong-scaling", portFrom: "L", portTo: "R"}],
-  next: []
-  }
+const relations={
+"von-neumann":{suggestedPrev:[],requiredPrev:[],next:[{id:"caches",portFrom:"R",portTo:"L"},{id:"machine-architectures",portFrom:"B",portTo:"L"}]},
+"caches":{suggestedPrev:[],requiredPrev:[{id:"von-neumann",portFrom:"L",portTo:"R"}],next:[{id:"vectorisation",portFrom:"R",portTo:"L"}]},
+"vectorisation":{suggestedPrev:[{id:"GPU",portFrom:"BL",portTo:"TR"},{id:"shared-memory",portFrom:"B",portTo:"T"}],requiredPrev:[{id:"caches",portFrom:"L",portTo:"R"},{id:"machine-architectures",portFrom:"TR",portTo:"BL"}],next:[{id:"roofline",portFrom:"R",portTo:"L"}]},
+"machine-architectures":{suggestedPrev:[],requiredPrev:[{id:"von-neumann",portFrom:"L",portTo:"B"}],next:[{id:"vectorisation",portFrom:"BL",portTo:"TR"},{id:"GPU",portFrom:"R",portTo:"L"},{id:"MPI",portFrom:"B",portTo:"L"},{id:"shared-memory",portFrom:"B",portTo:"BL"}]},
+"GPU":{suggestedPrev:[],requiredPrev:[{id:"machine-architectures",portFrom:"R",portTo:"L"}],next:[{id:"vectorisation",portFrom:"TR",portTo:"BL"},{id:"shared-memory",portFrom:"R",portTo:"TL"}]},
+"shared-memory":{suggestedPrev:[{id:"MPI",portFrom:"L",portTo:"B"},{id:"GPU",portFrom:"TL",portTo:"R"}],requiredPrev:[{id:"machine-architectures",portFrom:"BL",portTo:"B"}],next:[{id:"strong-scaling",portFrom:"R",portTo:"B"},{id:"vectorisation",portFrom:"T",portTo:"B"}]},
+"MPI":{suggestedPrev:[],requiredPrev:[{id:"machine-architectures",portFrom:"L",portTo:"B"}],next:[{id:"strong-scaling",portFrom:"R",portTo:"BL"},{id:"shared-memory",portFrom:"B",portTo:"L"}]},
+"roofline":{suggestedPrev:[],requiredPrev:[{id:"vectorisation",portFrom:"L",portTo:"R"}],next:[]},
+"strong-scaling":{suggestedPrev:[{id:"MPI",portFrom:"R",portTo:"L"},{id:"shared-memory",portFrom:"B",portTo:"R"}],requiredPrev:[],next:[{id:"weak-scaling",portFrom:"R",portTo:"L"}]},
+"weak-scaling":{suggestedPrev:[],requiredPrev:[{id:"strong-scaling",portFrom:"L",portTo:"R"}],next:[]}
 };
 
+const NAME={};TOPICS.forEach(t=>NAME[t[0]]=t[1]);
+const grid=document.getElementById("graph"),svg=document.getElementById("arrows-layer"),info=document.getElementById("info");
+let selected=null;
 
+/* Build cards */
+TOPICS.forEach(([id,title,yt,lect,r,c])=>{
+  const d=document.createElement("div");
+  d.id=id;d.className="arch-card";d.style.gridRow=r;d.style.gridColumn=c;
+  d.setAttribute("role","button");d.tabIndex=0;d.setAttribute("aria-expanded","false");
+  d.innerHTML=`<div class="card-content"><h2 class="title">${title}</h2><span class="tag"></span><div class="actions"><a class="btn" href="#" data-a="v">Lecture</a><a class="btn" href="#" data-a="a">Activities</a></div></div>`;
+  d.addEventListener("click",e=>{
+    const b=e.target.closest(".btn");
+    if(b){e.preventDefault();e.stopPropagation();b.dataset.a==="v"?openVideo(yt,title,lect):openActivity(id.toLowerCase());return;}
+    select(id);e.stopPropagation();
+  });
+  d.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target===d){e.preventDefault();select(id);}});
+  grid.appendChild(d);
+});
 
+/* Arrows */
+const defs=document.createElementNS("http://www.w3.org/2000/svg","defs");
+defs.innerHTML=`<marker id="arrowhead-end" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="context-stroke"/></marker><marker id="arrowhead-start" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="10 0,0 3.5,10 7" fill="context-stroke"/></marker>`;
+svg.appendChild(defs);
 
+function getPort(r,p){const x=r.left,y=r.top,w=r.width,h=r.height;
+  return{TL:{x,y},T:{x:x+w/2,y},TR:{x:x+w,y},L:{x,y:y+h/2},R:{x:x+w,y:y+h/2},BL:{x,y:y+h},B:{x:x+w/2,y:y+h},BR:{x:x+w,y:y+h}}[p];}
 
-function intersectRect(cx, cy, hw, hh, dx, dy) {
-  const tx = dx !== 0 ? hw / Math.abs(dx) : Infinity;
-  const ty = dy !== 0 ? hh / Math.abs(dy) : Infinity;
-  const t = Math.min(tx, ty);
-  return {
-    x: cx + dx * t,
-    y: cy + dy * t
-  };
+function createLine(a,b,pf,pt){
+  const A=document.getElementById(a),B=document.getElementById(b);if(!A||!B)return null;
+  const par=grid.getBoundingClientRect(),p1=getPort(A.getBoundingClientRect(),pf),p2=getPort(B.getBoundingClientRect(),pt);
+  p1.x-=par.left;p1.y-=par.top;p2.x-=par.left;p2.y-=par.top;
+  const m={x:p1.x,y:p1.y},g=12;
+  ({L:()=>p1.x-=g,R:()=>p1.x+=g,T:()=>p1.y-=g,B:()=>p1.y+=g}[pf]||(()=>{}))();
+  ({L:()=>p2.x-=g,R:()=>p2.x+=g,T:()=>p2.y-=g,B:()=>p2.y+=g}[pt]||(()=>{}))();
+  if(pf==="L"||pf==="R")m.x=p2.x;else m.y=p2.y;
+  const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+  path.setAttribute("d",`M ${p1.x} ${p1.y} L ${m.x} ${m.y} L ${p2.x} ${p2.y}`);
+  path.classList.add("arrow");svg.appendChild(path);return path;
 }
 
-function getPort(rect, port) {
-  const x0 = rect.left;
-  const y0 = rect.top;
-  const w = rect.width;
-  const h = rect.height;
-
-  switch (port) {
-    case "TL": return { x: x0,         y: y0 };
-    case "T":  return { x: x0 + w/2,   y: y0 };
-    case "TR": return { x: x0 + w,     y: y0 };
-
-    case "L":  return { x: x0,         y: y0 + h/2 };
-    case "R":  return { x: x0 + w,     y: y0 + h/2 };
-
-    case "BL": return { x: x0,         y: y0 + h };
-    case "B":  return { x: x0 + w/2,   y: y0 + h };
-    case "BR": return { x: x0 + w,     y: y0 + h };
-  }
+function drawRel(from,rel){
+  const to=rel.id,key=[from,to].sort().join("__");
+  if(svg.querySelector(`.arrow[data-key="${key}"]`))return;
+  const l=createLine(from,to,rel.portFrom||"R",rel.portTo||"L");
+  if(l){l.dataset.key=key;l.dataset.a=from;l.dataset.b=to;}
 }
 
-
-
-
-
-function applyArrowStyle(line, type) {
-  if (!type) return;
-  line.classList.add("active", `arrow-${type}`);
+function drawAll(){
+  svg.querySelectorAll(".arrow").forEach(p=>p.remove());
+  Object.entries(relations).forEach(([f,r])=>{r.next.forEach(x=>drawRel(f,x));r.requiredPrev.forEach(x=>drawRel(x.id,{...x,id:f}));});
+  if(selected)select(selected);
 }
 
+/* Selection */
+function clearState(){
+  document.querySelectorAll(".arch-card .tag").forEach(t=>t.textContent="");
+  document.querySelectorAll(".arch-card").forEach(c=>{c.classList.remove("active","before","after","connected","unrelated");c.setAttribute("aria-expanded","false");});
+  svg.querySelectorAll(".arrow").forEach(l=>{l.classList.remove("arrow-before","arrow-required","arrow-after");l.removeAttribute("marker-start");l.removeAttribute("marker-end");});
+}
+
+function select(id){
+  selected=id;clearState();
+  const card=document.getElementById(id),rel=relations[id];
+  card.classList.add("active");card.setAttribute("aria-expanded","true");
+  const mark=(r,cls,label)=>{const el=document.getElementById(r.id);el.classList.add(cls);el.querySelector(".tag").textContent=label;};
+  rel.suggestedPrev.forEach(r=>mark(r,"before","Background"));
+  rel.requiredPrev.forEach(r=>mark(r,"connected","Learn first"));
+  rel.next.forEach(r=>mark(r,"after","Comes next"));
+  document.querySelectorAll(".arch-card").forEach(c=>{if(c!==card&&!/before|after|connected/.test(c.className))c.classList.add("unrelated");});
+  svg.querySelectorAll(".arrow").forEach(l=>{
+    const isA=l.dataset.a===id,isB=l.dataset.b===id;if(!isA&&!isB)return;
+    const other=document.getElementById(isA?l.dataset.b:l.dataset.a);
+    l.classList.add(other.classList.contains("connected")?"arrow-required":other.classList.contains("before")?"arrow-before":"arrow-after");
+    l.setAttribute(isA?"marker-end":"marker-start",isA?"url(#arrowhead-end)":"url(#arrowhead-start)");
+    svg.appendChild(l);
+  });
+  showInfo(id);
+}
+
+function showInfo(id){
+  const t=TOPICS.find(x=>x[0]===id),rel=relations[id];
+  const names=a=>a.length?a.map(r=>NAME[r.id]).join(", "):null;
+  const rows=[["Learn first (required)",names(rel.requiredPrev)||"Nothing, this is a starting point"],["Helpful background",names(rel.suggestedPrev)||"None"],["Comes next",names(rel.next)||"You have reached the end of this path"]];
+  info.innerHTML=`<h2>${t[1]}</h2><p class="lect">Lecturer: ${t[3]}</p><p>${t[6]}</p><dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}<dt>Activities</dt><dd>Interactive exercises with instant feedback on the key ideas of this lecture.</dd></dl><button onclick="resetDiagram()">Clear selection</button>`;
+}
+
+function resetDiagram(){
+  selected=null;clearState();
+  info.innerHTML=`<h2>Select a topic to begin</h2><p>Good starting point: <b>Von Neumann Architecture</b>, the top-left card. Everything else builds on it.</p>`;
+}
+
+grid.addEventListener("click",e=>{if(e.target===grid)resetDiagram();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeVideo();});
+
+/* Video */
+function openVideo(id,title,lect){
+  document.getElementById("video-iframe").src=`https://www.youtube.com/embed/${id}${id.includes("?")?"&":"?"}autoplay=1`;
+  document.getElementById("video-title").textContent=title;
+  document.getElementById("video-lecturer").textContent=lect;
+  document.getElementById("video-modal").style.display="flex";
+}
+function closeVideo(){document.getElementById("video-modal").style.display="none";document.getElementById("video-iframe").src="";}
+document.getElementById("video-modal").addEventListener("click",e=>{if(e.target.id==="video-modal")closeVideo();});
+
+/* PDF: switch to the fixed poster layout, redraw the arrows, then restore */
+function setPrint(on){document.body.classList.toggle("print-mode",on);drawAll();}
+window.addEventListener("beforeprint",()=>setPrint(true));
+window.addEventListener("afterprint",()=>setPrint(false));
+
+/* Draw after layout and on resize */
+window.addEventListener("load",drawAll);
+let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(drawAll,120);});
+drawAll();
 </script>
-
-
-<script>
-
-function openVideo(videoId, title, lecturer) {
-  const modal = document.getElementById("video-modal");
-  const iframe = document.getElementById("video-iframe");
-  const titleEl = document.getElementById("video-title");
-  const lecturerEl = document.getElementById("video-lecturer");
-
-  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-  titleEl.textContent = title;
-  lecturerEl.textContent = lecturer;
-
- 
-  modal.style.display = "flex";
-}
-
-
-function closeVideo() {
-  const modal = document.getElementById("video-modal");
-  const iframe = document.getElementById("video-iframe");
-
-  
-  modal.style.display = "none";
-
-
-  iframe.src = "";
-}
-</script>
-
-
-
-<script>
-const svg = document.getElementById("arrows-layer");
-
-function createArrowheads(svg) {
-  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-  defs.innerHTML = `
-    <marker id="arrowhead-end"
-      markerWidth="10"
-      markerHeight="7"
-      refX="10"
-      refY="3.5"
-      orient="auto"
-      markerUnits="strokeWidth">
-      <polygon points="0 0, 10 3.5, 0 7"
-               fill="context-stroke"/>
-    </marker>
-
-    <marker id="arrowhead-start"
-      markerWidth="10"
-      markerHeight="7"
-      refX="0"
-      refY="3.5"
-      orient="auto"
-      markerUnits="strokeWidth">
-      <polygon points="10 0, 0 3.5, 10 7"
-               fill="context-stroke"/>
-    </marker>
-  `;
-  svg.appendChild(defs);
-}
-
-
-createArrowheads(svg);
-
-
-
-function pairKey(a, b) {
-  return [a, b].sort().join("__");
-}
-
-
-function createBaseLine(a, b, portFrom = "R", portTo = "L") {
-  const from = document.getElementById(a);
-  const to   = document.getElementById(b);
-  if (!from || !to) return null;
-
-  const r1 = from.getBoundingClientRect();
-  const r2 = to.getBoundingClientRect();
-  const parent = document.querySelector(".graph-grid").getBoundingClientRect();
-
-  const p1 = getPort(r1, portFrom);
-  const p2 = getPort(r2, portTo);   
-
-
-  p1.x -= parent.left; p1.y -= parent.top;
-  p2.x -= parent.left; p2.y -= parent.top;
-
-  
-  let mid = { x: p1.x, y: p1.y };
-
-  const margin = 12; 
-  switch (portFrom) {
-    case "L": p1.x -= margin; break;
-    case "R": p1.x += margin; break;
-    case "T": p1.y -= margin; break;
-    case "B": p1.y += margin; break;
-  }
-
-  switch (portTo) {
-    case "L": p2.x -= margin; break;
-    case "R": p2.x += margin; break;
-    case "T": p2.y -= margin; break;
-    case "B": p2.y += margin; break;
-  }
-  
-  if (portFrom === "L") mid.x = p2.x;
-  else if (portFrom === "R") mid.x = p2.x;
-  else if (portFrom === "T") mid.y = p2.y;
-  else if (portFrom === "B") mid.y = p2.y;
-  else if (portFrom === "TL" || portFrom === "TR") mid.y = p2.y;
-  else if (portFrom === "BL" || portFrom === "BR") mid.y = p2.y;
-
-
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute(
-    "d",
-    `M ${p1.x} ${p1.y}
-     L ${mid.x} ${mid.y}
-     L ${p2.x} ${p2.y}`
-  );
-
-  path.classList.add("arrow");
-  svg.appendChild(path);
-  return path;
-}
-
-
-
-
-function drawRelation(from, rel) {
-  const to = typeof rel === "string" ? rel : rel.id;
-  const portFrom = rel.portFrom || "R";
-  const portTo   = rel.portTo   || "L";
-
-  const key = pairKey(from, to);
-
-  let line = document.querySelector(`.arrow[data-key="${key}"]`);
-  if (!line) {
-    line = createBaseLine(from, to, portFrom, portTo);
-    if (!line) return;
-
-    line.dataset.key = key;
-    line.dataset.a = from;
-    line.dataset.b = to;
-  }
-}
-
-
-
-function applyArrowStyle(line, type) {
-  if (!type) return;
-  line.classList.add("active", `arrow-${type}`);
-}
-
-
-Object.entries(relations).forEach(([from, rel]) => {
-  rel.next.forEach(r => drawRelation(from, r));
-  rel.requiredPrev.forEach(r => drawRelation(r.id, { ...r, id: from }));
-});
-
-
-function styleArrowByNode(line, node, direction) {
-  line.classList.add("active");
-
-  if (node.classList.contains("connected")) {
-    line.classList.add("arrow-required");
-  } 
-  else if (node.classList.contains("before")) {
-    line.classList.add("arrow-before");
-  } 
-  else if (node.classList.contains("after")) {
-    line.classList.add("arrow-after");
-  }
-
-  orientArrow(line, direction);
-}
-
-
-function orientArrow(line, fromSelected) {
-  line.removeAttribute("marker-start");
-  line.removeAttribute("marker-end");
-
-  if (fromSelected === "to") {
- 
-    line.setAttribute("marker-start", "url(#arrowhead-start)");
-  } else {
-   
-    line.setAttribute("marker-end", "url(#arrowhead-end)");
-  }
-}
-
-
-
-function nodeClick(card, event) {
-  event.stopPropagation();
-  const allCards = document.querySelectorAll(".arch-card");
-  const id = card.id;
-
-
-  allCards.forEach(c => {
-    c.classList.remove("active","before","after","connected","unrelated");
-  });
-
-
-  card.classList.add("active");
-
-
-  if (relations[id]) {
-const { suggestedPrev = [], requiredPrev = [], next = [] } = relations[id];
-
-suggestedPrev.forEach(rel => {
-  const rid = typeof rel === "string" ? rel : rel.id;
-  const el = document.getElementById(rid);
-  if (el) el.classList.add("before");
-});
-
-requiredPrev.forEach(rel => {
-  const rid = typeof rel === "string" ? rel : rel.id;
-  const el = document.getElementById(rid);
-  if (el) el.classList.add("connected");
-});
-
-next.forEach(rel => {
-  const rid = typeof rel === "string" ? rel : rel.id;
-  const el = document.getElementById(rid);
-  if (el) el.classList.add("after");
-});
-
-
-  }
-
-
-  allCards.forEach(c => {
-    if (
-      c !== card &&
-      !c.classList.contains("before") &&
-      !c.classList.contains("after") &&
-      !c.classList.contains("connected")
-    ) c.classList.add("unrelated");
-  });
-
-
-const arrows = document.querySelectorAll(".arrow");
-
-arrows.forEach(line => {
-  line.classList.remove(
-    "active",
-    "arrow-before",
-    "arrow-required",
-    "arrow-after"
-  );
-  line.removeAttribute("marker-start");
-  line.removeAttribute("marker-end");
-
-
-  if (line.dataset.a === id) {
-    const other = document.getElementById(line.dataset.b);
-    if (other) {
-      styleArrowByNode(line, other, "from");
-     
-      line.parentNode.appendChild(line);
-    }
-  } 
- 
-  else if (line.dataset.b === id) {
-    const other = document.getElementById(line.dataset.a);
-    if (other) {
-      styleArrowByNode(line, other, "to");
-      // mover al final para que quede encima
-      line.parentNode.appendChild(line);
-    }
-  }
-});
-
-
-
-
-}
-
-
-function resetDiagram() {
-  const allCards = document.querySelectorAll(".arch-card");
-  const allArrows = document.querySelectorAll(".arrow");
-
-  allCards.forEach(c => {
-    c.classList.remove("active","before","after","connected","unrelated");
-  });
-
-
-  allArrows.forEach(line => {
-    line.classList.remove("active","arrow-before","arrow-required","arrow-after");
-    line.removeAttribute("marker-start");
-    line.removeAttribute("marker-end");
-  });
-}
-
-
-document.querySelector(".graph-grid").addEventListener("click", function(e){
-
-  if (e.target === this) {
-    resetDiagram();
-  }
-});
-</script>
-
-{% include activity-modal.html %}
 
 <script>
 window.activitiesData = {};
-
 {% for activity in site.data.activities %}
   window.activitiesData[{{ activity[0] | jsonify }}] = {{ activity[1] | jsonify }};
 {% endfor %}
 </script>
-
 <script src="{{ '/assets/js/activities.js' | relative_url }}"></script>
