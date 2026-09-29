@@ -251,7 +251,7 @@ html,body{background:var(--bg)!important;margin:0!important}
 <ul>
 <li><b>Lecture:</b> a short video from a Durham University HPC lecturer.</li>
 <li><b>Activities:</b> interactive exercises with instant feedback: multiple choice, fill-in-the-code, short answers and drag-and-drop sorting.</li>
-<li>10 topics, 4 lecturers, one learning path from hardware to scaling.</li>
+<li>10 topics, 4 lecturers, multiple learning pathways</li>
 </ul>
 </section>
 <section class="info" id="info" aria-live="polite">
