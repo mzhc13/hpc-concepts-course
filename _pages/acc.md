@@ -23,7 +23,7 @@ body{background:var(--bg);color:#fff}
 .stage{grid-template-columns:250px minmax(0,1fr) 250px}
 .side{display:flex;flex-direction:column}
 }
-.panel{background:#064756;border:2px solid #fff;border-radius:16px;padding:16px 20px}
+.panel{background:#064756;border:2px solid #fff;border-radius:16px;padding:16px 20px; margin-left:1rem;}
 .panel h2{font-size:19px;margin:0 0 8px;color:#fff}
 .panel ol,.panel ul{margin:0;padding-left:20px;font-size:15px;line-height:1.5;color:#f3eee2}
 .panel p{font-size:15px;line-height:1.5;color:#f3eee2;margin:0 0 6px}
@@ -63,9 +63,38 @@ body{background:var(--bg);color:#fff}
 .legend-note{font-size:14px!important;margin-top:10px!important}
 .info button{background:#fff;color:#042f39;border:0;border-radius:22px;padding:8px 18px;font-weight:700;cursor:pointer}
 .info button:hover{background:#ffe66d}
-.foot{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;margin:24px 0 32px}
-.foot a{color:#fff;text-decoration:underline}
-.logo{max-width:200px;max-height:110px;width:auto;height:auto;object-fit:contain}
+.foot{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:24px;
+  align-items:center;
+  margin:24px 0 32px;
+}
+
+.foot > div:first-child{
+  justify-self:start;
+}
+
+.foot > div:last-child{
+  grid-column:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+
+.foot a{
+  color:#fff;
+  text-decoration:underline;
+}
+
+.logo{
+  max-width:200px;
+  max-height:110px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+}
 .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:9999}
 .video-modal-content{background:#6c2a68;border-radius:16px;padding:24px;width:90%;max-width:900px;position:relative}
 .video-modal h2{margin:0 0 4px;font-size:36px;text-align:center;color:#fff}
@@ -101,12 +130,30 @@ body{background:var(--bg);color:#fff}
 .print-mode .graph-grid{grid-template-rows:repeat(4,170px);row-gap:22px}
 .print-mode .arch-card{height:170px}
 .print-mode .info button{display:none}
-.print-mode .foot {
-  margin: 14px 0 0;
+.print-mode .foot{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:24px;
+  width:100%;
+  margin:14px 0 0;
 }
 
-.print-mode .logo {
-  max-height: 55px;
+.print-mode .foot > div:first-child{
+  justify-self:start;
+}
+
+.print-mode .foot > div:last-child{
+  grid-column:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+
+.print-mode .logo{
+  max-width:150px;
+  max-height:55px;
 }
 /* Print / PDF fixes */
 .print-mode .arch-card .title {
@@ -119,37 +166,7 @@ body{background:var(--bg);color:#fff}
   color: #000 !important;
 }
 
-.print-mode .foot {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 24px;
-  width: 100%;
-}
 
-.print-mode .foot > div:first-child {
-  color: #fff !important;
-}
-
-.print-mode .foot > div:first-child a {
-  color: #fff !important;
-}
-
-.print-mode .foot > div:last-child {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 18px;
-  white-space: nowrap;
-}
-
-.print-mode .foot .logo {
-  display: block;
-  width: auto;
-  max-width: 150px;
-  max-height: 55px;
-  object-fit: contain;
-}
 
 
 @media print{
@@ -264,7 +281,7 @@ html,body{background:var(--bg)!important;margin:0!important}
 
 <div class="foot">
 
-<div>Source, activities and teaching materials: <a href="https://github.com/mzhc13/high-performance-computing-concepts-course">course repository on GitHub</a></div>
+
 <div><img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/durham.png?raw=true" class="logo" alt="Durham University"> <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/ukri.png?raw=true" class="logo" alt="UKRI"></div>
 </div>
 
