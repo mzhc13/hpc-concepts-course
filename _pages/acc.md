@@ -78,8 +78,17 @@ body{background:var(--bg);color:#fff}
 .pdf-btn:hover,.pdf-btn:focus-visible{background:#ffe66d;outline:3px solid #ffe66d;outline-offset:3px}
 
 /* PDF / print: one A3 landscape page, fixed width so the arrows line up */
-@page{size:420mm 297mm;margin:0}
-.print-mode .wrap{width:1580px;max-width:none;margin:0 auto;padding:22px 30px;box-sizing:border-box}
+@page{
+  size:420mm 297mm;
+  margin:0;
+}
+.print-mode .wrap{
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:22px 30px;
+  box-sizing:border-box;
+}
 .print-mode .hero{padding:14px 30px;margin:0 0 14px}
 .print-mode .hero h1{font-size:30px}
 .print-mode .hero p{font-size:15px;margin:2px auto}
@@ -353,10 +362,16 @@ function openVideo(id,title,lect){
 function closeVideo(){document.getElementById("video-modal").style.display="none";document.getElementById("video-iframe").src="";}
 document.getElementById("video-modal").addEventListener("click",e=>{if(e.target.id==="video-modal")closeVideo();});
 
-/* PDF: switch to the fixed poster layout, redraw the arrows, then restore */
-function setPrint(on){document.body.classList.toggle("print-mode",on);drawAll();}
-window.addEventListener("beforeprint",()=>setPrint(true));
-window.addEventListener("afterprint",()=>setPrint(false));
+/* PDF / print */
+window.addEventListener("beforeprint", () => {
+  document.body.classList.add("print-mode");
+  requestAnimationFrame(() => drawAll());
+});
+
+window.addEventListener("afterprint", () => {
+  document.body.classList.remove("print-mode");
+  requestAnimationFrame(() => drawAll());
+});
 
 /* Draw after layout and on resize */
 window.addEventListener("load",drawAll);
