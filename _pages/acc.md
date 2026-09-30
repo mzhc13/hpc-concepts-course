@@ -106,7 +106,7 @@ body{background:var(--bg);color:#fff}
   object-fit:contain;
 }
 .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:9999}
-.video-modal-content{background:#6c2a68;border-radius:16px;padding:24px;width:90%;max-width:900px;position:relative}
+.video-modal-content{background:#6c2a68;border-radius:16px;padding:24px;width:90%;max-width:1200px;position:relative}
 .video-modal h2{margin:0 0 4px;font-size:36px;text-align:center;color:#fff}
 .video-modal p{margin:0 0 16px;text-align:center;color:#fff}
 .video-wrapper{position:relative;padding-top:56.25%}
