@@ -64,23 +64,33 @@ body{background:var(--bg);color:#fff}
 .info button{background:#fff;color:#042f39;border:0;border-radius:22px;padding:8px 18px;font-weight:700;cursor:pointer}
 .info button:hover{background:#ffe66d}
 .foot{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  gap:24px;
+  display:flex;
+  justify-content:center;
   align-items:center;
-  margin:24px 0 32px;
+  margin:20px 0 20px;
 }
 
-.foot > div:first-child{
-  justify-self:start;
+.foot-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  text-align:center;
 }
 
-.foot > div:last-child{
-  grid-column:2;
+.foot-logos{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:18px;
+}
+
+.foot-text{
+  margin:0;
+  font-size:0.9rem !important;
+  line-height:1.4;
+  color:#f3eee2;
+  max-width:1500px;
 }
 
 .foot a{
@@ -224,7 +234,7 @@ html,body{background:var(--bg)!important;margin:0!important}
 <div class="hero">
   <h1>High-Performance Computing Concepts</h1>
   <p class="authors">
-    Eva Fernández Amez · Thomas Flynn · Mladen Ivkovic · Christopher Marcotte · Tobias Weinzierl
+    Eva Fernandez Amez · Thomas Flynn · Mladen Ivkovic · Christopher Marcotte · Tobias Weinzierl
   </p>
   <p class="meta">Interactive Research e-Poster · Supercomputing 26 (SC26), Chicago</p>
 </div>
@@ -280,9 +290,24 @@ html,body{background:var(--bg)!important;margin:0!important}
 </div>
 
 <div class="foot">
+  <div class="foot-content">
 
+    <div class="foot-logos">
+      <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/durham.png?raw=true"
+           class="logo"
+           alt="Durham University">
 
-<div><img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/durham.png?raw=true" class="logo" alt="Durham University"> <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/ukri.png?raw=true" class="logo" alt="UKRI"></div>
+      <img src="https://github.com/mzhc13/high-performance-computing-concepts-course/blob/main/assets/images/ukri.png?raw=true"
+           class="logo"
+           alt="UKRI">
+    </div>
+
+    <p class="foot-text">
+      This work has received funding through the UKRI Digital Research Infrastructure Programme under grants UKRI1801 (SHAREing) and UKRI293 (HAI-End)
+    
+    </p>
+
+  </div>
 </div>
 
 <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title">
