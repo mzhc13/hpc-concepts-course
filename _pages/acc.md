@@ -188,7 +188,7 @@ html,body{background:var(--bg)!important;margin:0!important}
 
 /* Activity modal styles (unchanged from your version) */
 .activity-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
-.activity-modal-content{position:relative;width:850px;max-width:100%;height:90vh;overflow-y:auto;background:#6c2a68;color:#fff;border-radius:22px;border:3px solid #fff;padding:35px}
+.activity-modal-content{position:relative;width:1000px;max-width:100%;height:70vh;overflow-y:auto;background:#6c2a68;color:#fff;border-radius:22px;border:3px solid #fff;padding:35px}
 .activity-modal-content h2{text-align:center;font-size:32px;margin-top:0;}
 .activity-modal-content h3{color:#fff;font-size:22px;line-height:1.4}
 .activity-close{position:absolute;top:10px;right:15px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer}
