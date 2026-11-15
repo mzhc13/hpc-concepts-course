@@ -266,6 +266,7 @@ html,body{background:var(--bg)!important;margin:0!important}
 </section>
 </div>
 
+
 <div class="main-col">
 <div class="scroller" tabindex="0" aria-label="Knowledge graph. Scroll sideways on small screens.">
 <div class="graph-grid" id="graph"><svg id="arrows-layer" aria-hidden="true"></svg></div>
@@ -327,7 +328,7 @@ const TOPICS=[
 ["von-neumann","Von Neumann Architecture","3ru-v3sAdqw?si=Jj8Koun21HpjFCLY","Professor Tobias Weinzierl",1,1,"The stored-program model of a computer: processor, memory and the bus between them. It explains the von Neumann bottleneck, why moving data usually costs more than computing on it."],
 ["caches","Caches","ZPXYoJJo8qA?si=ZlX967WyjtxgpLWm","Professor Tobias Weinzierl",1,2,"The memory hierarchy, cache lines and data locality. Learn why the order in which you access memory can matter more than the arithmetic you do."],
 ["machine-architectures","Machine Architectures (Flynn’s Taxonomy)","jWFImJ-5Gtg?si=BBZou2CJvwDj7EC-","Dr. Mladen Ivkovic",2,2,"Flynn’s taxonomy (SISD, SIMD, MISD, MIMD) as a map from hardware designs to the kinds of parallelism you can exploit."],
-["GPU","GPU Architecture","8axA0RUaxRA?si=kwFcCVbDKzJw3vw4","Dr. Christopher Marcotte",2,3,"How throughput-oriented, many-core GPUs differ from CPUs: thread hierarchy, memory and the kinds of problems that suit them."],
+["GPU","GPU Architecture","oUOfOdfrPgQ?si=ytzLOsFrhBejVBHs","Dr. Christopher Marcotte",2,3,"How throughput-oriented, many-core GPUs differ from CPUs: thread hierarchy, memory and the kinds of problems that suit them."],
 ["MPI","MPI","i-88l2K9824?si=5hG4_gn3DE3_r6Tq","Dr. Christopher Marcotte",3,3,"Distributed-memory programming with the Message Passing Interface: ranks, point-to-point messages and collective operations across nodes."],
 ["vectorisation","Vectorisation","7Z3JrE8SBgU?si=QB-EK98D3_63IAiq","Dr. Thomas Flynn",1,4,"Using SIMD units to apply one instruction to several data items at once, and how data layout and loop structure let compilers do it."],
 ["shared-memory","Shared-Memory Parallel Paradigms","iwb17_aCSRA?si=NGorUytvUqWRMWEZ","Dr. Mladen Ivkovic",4,4,"Multithreading on one node: sharing data between threads, race conditions and synchronisation."],
