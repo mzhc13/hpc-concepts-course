@@ -28,18 +28,18 @@ sections:
         words: 3
 
 
-      - id: vn-fetch-compute-store-drag
-        type: "drag-order"
-        question: "Drag the words into the correct boxes"
-        instruction: "The fundamental sequence of steps that must be completed for every calculation is, in order:"
-        items:
-          - "fetch"
-          - "compute"
-          - "store"
-        answer:
-          - "fetch"
-          - "compute"
-          - "store"
+    #  - id: vn-fetch-compute-store-drag
+     #   type: "drag-order"
+      #  question: "Drag the words into the correct boxes"
+       # instruction: "The fundamental sequence of steps that must be completed for every calculation is, in order:"
+        #items:
+         # - "fetch"
+        # - "compute"
+         # - "store"
+       # answer:
+       #   - "fetch"
+       #   - "compute"
+       #   - "store"
 
 
       - id: vn-same-memory
