@@ -105,6 +105,20 @@ body{background:var(--bg);color:#fff}
   height:auto;
   object-fit:contain;
 }
+
+/* QR "take this map with you" card, inside the title banner (right side, vertically centred) */
+.hero{position:relative}
+.hero .hero-qr{position:absolute;top:50%;right:24px;transform:translateY(-50%);display:flex;align-items:center;gap:10px;box-sizing:border-box;background:#fff;color:#042f39;border-radius:12px;padding:8px 12px 8px 8px;box-shadow:0 2px 10px rgba(0,0,0,.25);text-align:left}
+.hero .hero-qr[hidden]{display:none}
+.hero .hero-qr .tq{width:84px;flex:none;background:#fff}
+.hero .hero-qr p{margin:0;max-width:115px;font-size:12px;line-height:1.3;color:#042f39}
+.hero .hero-qr p b{display:block}
+.hero .hero-qr p span{display:block;font-weight:400;opacity:.75;margin-top:3px}
+/* On narrower screens the card moves below the title text, still inside the banner */
+@media (max-width:1500px){
+.hero .hero-qr{position:static;transform:none;display:inline-flex;margin:12px auto 0}
+.hero .hero-qr[hidden]{display:none}
+}
 .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:9999}
 .video-modal-content{background:#6c2a68;border-radius:16px;padding:24px;width:90%;max-width:1200px;position:relative}
 .video-modal h2{margin:0 0 4px;font-size:36px;text-align:center;color:#fff}
@@ -165,6 +179,8 @@ body{background:var(--bg);color:#fff}
   max-width:150px;
   max-height:55px;
 }
+.print-mode .hero .hero-qr{position:absolute;top:50%;right:30px;transform:translateY(-50%);margin:0}
+.print-mode .hero .hero-qr .tq{width:72px}
 /* Print / PDF fixes */
 .print-mode .arch-card .title {
   color: #fff !important;
@@ -175,9 +191,6 @@ body{background:var(--bg);color:#fff}
 .print-mode .arch-card.after .title {
   color: #000 !important;
 }
-
-
-
 
 @media print{
 *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -237,6 +250,10 @@ html,body{background:var(--bg)!important;margin:0!important}
     Eva Fernandez Amez · Thomas Flynn · Mladen Ivkovic · Christopher Marcotte · Tobias Weinzierl
   </p>
   <p class="meta">Interactive Research e-Poster · Supercomputing 26 (SC26), Chicago</p>
+  <div class="hero-qr" id="takeaway" hidden>
+    <div class="tq" id="takeaway-qr"></div>
+    <p><b>Take this map with you</b><span>Scan to open it on your phone</span></p>
+  </div>
 </div>
 
 <div class="stage">
@@ -265,7 +282,6 @@ html,body{background:var(--bg)!important;margin:0!important}
 <p class="legend-note">Related cards also carry a text label (Learn first, Background, Comes next), so the map never relies on colour alone.</p>
 </section>
 </div>
-
 
 <div class="main-col">
 <div class="scroller" tabindex="0" aria-label="Knowledge graph. Scroll sideways on small screens.">
@@ -478,3 +494,32 @@ window.activitiesData = {};
 {% endfor %}
 </script>
 <script src="{{ '/assets/js/activities.js' | relative_url }}"></script>
+
+<!-- QR code: library + generator. Encodes the live URL of this page. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  var tk = document.getElementById("takeaway");
+  var box = document.getElementById("takeaway-qr");
+  if (!tk || !box || typeof qrcode === "undefined") return;
+  try {
+    // Live page URL without hash/query, so the map opens clean.
+    var url = location.origin + location.pathname;
+    var qr = qrcode(0, "M");
+    qr.addData(url);
+    qr.make();
+    box.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    var s = box.querySelector("svg");
+    if (s) {
+      s.setAttribute("role", "img");
+      s.setAttribute("aria-label", "QR code linking to " + url);
+      s.style.width = "100%";
+      s.style.height = "auto";
+      s.style.display = "block";
+    }
+    tk.hidden = false;
+  } catch (e) {
+    /* If anything fails, the card stays hidden and the rest of the page is unaffected. */
+  }
+})();
+</script>
