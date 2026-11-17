@@ -50,8 +50,8 @@ sections:
       - "Scottish Index of Multiple Deprivation"
       - "Single Instruction, Multiple Data"
       answer:
+      - 3
       - 4
-      - 5
       correctFeedback: |
         Correct! Single Instruction, Multiple Data Correct. This is the canonical definition of SIMD in Flynn’s Taxonomy. It describes architectures where multiple data elements are processed in parallel under one instruction stream.
         While unrelated to computing, SIMD is a real-world acronym match used in UK public policy. So it's fair to mark it true :)
@@ -114,17 +114,15 @@ sections:
 
     - id: pipelining
       type: "multiple-select"
-      question: "Pipelining...  (select the three correct answers):"
+      question: "Pipelining...  (select the two correct answers):"
       options:
       - "...can be considered MISD"
       - "...can be more efficient with a greater number of stages in the pipeline"
       - "...takes advantages of having multiple cores available"
       - "...provides two threads per core"
-      - "...takes advantage of a compute core consisting of different, independent components "
       answer:
       - 0
       - 1
-      - 5
       correctFeedback: |
         Yes, pipelining breaks down instruction execution into separate stages (like fetch, decode, execute), each handled by different parts of the core, allowing overlap and improved throughput.
         Pipelining can also be seen as a form of Multiple Instruction, Single Data (MISD), where multiple instructions are processed at different stages but operate on the same data stream. Finally, increasing pipeline stages can improve clock speed and throughput by reducing the work per stage.
